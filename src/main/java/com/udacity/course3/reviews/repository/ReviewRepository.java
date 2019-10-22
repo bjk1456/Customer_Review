@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends CrudRepository<Review, Integer> {
 
-    //Optional<Review> findByReviewId(Integer productId);
+    Optional<Review> findByReviewId(Integer productId);
 
 }

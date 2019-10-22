@@ -1,5 +1,7 @@
 package com.udacity.course3.reviews.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Set;
 
 import javax.persistence.*;
@@ -11,7 +13,7 @@ import javax.validation.constraints.Size;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name="comment_id")
     private Long commentId;
 
     @NotBlank
@@ -22,8 +24,9 @@ public class Comment {
     @Column(name="content")
     private String content;
 
+    @JsonIgnore
     @ManyToOne(cascade= CascadeType.ALL)
-    @JoinColumn(name = "review_id")
+    @JoinColumn(name = "review_id_fk")
     private Review review;
 
     public Comment() {}

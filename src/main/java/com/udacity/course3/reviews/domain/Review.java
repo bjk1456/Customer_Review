@@ -29,6 +29,9 @@ public class Review {
     @JoinColumn(name="product_id_fk")
     private Product product;
 
+    @OneToMany(mappedBy="review",fetch = FetchType.LAZY)
+    private Set<Comment> comments;
+
     public Review() {}
 
     public void setId(Integer reviewId){this.reviewId = reviewId;}
@@ -46,5 +49,9 @@ public class Review {
     public void setProduct(Product product){this.product = product;}
 
     public Product getProduct() {return product;}
+
+    public void setComment(Set<Comment> comments){this.comments = comments;}
+
+    public Set<Comment> getComments() {return comments;}
 
 }

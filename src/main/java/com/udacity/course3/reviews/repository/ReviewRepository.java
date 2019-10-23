@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface ReviewRepository extends CrudRepository<Review, Integer> {
 
     Optional<Review> findByReviewId(Integer productId);
+    Optional<Review> findByContent(String content);
 
 }

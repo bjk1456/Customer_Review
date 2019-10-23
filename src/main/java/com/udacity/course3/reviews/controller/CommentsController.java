@@ -39,19 +39,13 @@ public class CommentsController {
      */
     @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.POST)
     public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") Integer reviewId,@RequestBody Comment comment) {
-        System.out.println("Inside createCommentForReview ... reviewId == " + reviewId);
         Optional<Review> review = revRepository.findByReviewId(reviewId);
         if (review.isPresent()) {
-            System.out.println("The review is ... product.get().getContent() " + review.get().getContent());
             comment.setReview(review.get());
-            //review.setProduct(product.get()); //.setId(product.get().getId());
-            //comRepository.save(comment);
-            //product.ifPresent(value -> System.out.println("The ifPresent is " + value.getName()));
             return new ResponseEntity(comRepository.save(comment), HttpStatus.OK);
         } else {
             throw new HttpServerErrorException(HttpStatus.NOT_FOUND);
         }
-
     }
 
     /**
@@ -65,7 +59,6 @@ public class CommentsController {
      */
     @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.GET)
     public ResponseEntity<?> listCommentsForReview(@PathVariable("reviewId") Integer reviewId) {
-        System.out.println("Inside of listCommentsForReview ... reviewId == " + reviewId);
         Optional<Review> review = revRepository.findByReviewId(reviewId);
         return new ResponseEntity(review.get().getComments(), HttpStatus.OK);
     }

@@ -33,22 +33,6 @@ public class ProductsController {
         return repository.save(product);
     }
 
-        /**
-        System.out.println("Inside of ProductsController ... createProduct ...");
-        Product prod = new Product();
-        prod.setName("Big one");
-        repository.save(prod);
-
-        Optional<Product> theP = repository.findByName("Big One");
-
-        theP.ifPresent(value -> System.out.println("The big one is " + value.getName()));
-         */
-
-
-
-
-        //throw new HttpServerErrorException(HttpStatus.NOT_IMPLEMENTED);
-
     /**
      * Finds a product by id.
      *
@@ -59,7 +43,6 @@ public class ProductsController {
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         Optional<Product> theP = repository.findById(id);
         if(theP.isPresent()){
-            //return theP.get();
             return new ResponseEntity<Product>(theP.get(), HttpStatus.OK);
         }
         else throw new HttpServerErrorException(HttpStatus.NOT_FOUND);

@@ -39,13 +39,9 @@ public class ReviewsController {
      */
     @RequestMapping(value = "/reviews/products/{productId}", method = RequestMethod.POST)
     public ResponseEntity<?> createReviewForProduct(@PathVariable("productId") Integer productId,@RequestBody Review review) {
-        System.out.println("Inside createReviewForProduct ... productId == " + productId);
         Optional<Product> product = prodRepository.findByProductId(productId);
         if (product.isPresent()) {
-            System.out.println("The product is ... product.get().getName() " + product.get().getName());
             review.setProduct(product.get());
-            //review.setProduct(product.get()); //.setId(product.get().getId());
-            //revRepository.save(review);
             product.ifPresent(value -> System.out.println("The ifPresent is " + value.getName()));
             return new ResponseEntity(revRepository.save(review), HttpStatus.OK);
         } else {

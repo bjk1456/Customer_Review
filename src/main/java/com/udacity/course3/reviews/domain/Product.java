@@ -2,6 +2,7 @@ package com.udacity.course3.reviews.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ public class Product {
     @Column(name="product_id")
     private Integer productId;
 
-    @NotBlank
+    @NotEmpty(message = "Please provide a name.")
     @Size(max = 350)
     @Column(name="name")
     private String name;

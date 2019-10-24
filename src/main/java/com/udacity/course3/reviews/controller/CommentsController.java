@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,7 @@ public class CommentsController {
      * @param reviewId The id of the review.
      */
     @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.POST)
-    public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") Integer reviewId,@RequestBody Comment comment) {
+    public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") Integer reviewId,@Valid @RequestBody Comment comment) {
         Optional<Review> review = revRepository.findByReviewId(reviewId);
         if (review.isPresent()) {
             comment.setReview(review.get());

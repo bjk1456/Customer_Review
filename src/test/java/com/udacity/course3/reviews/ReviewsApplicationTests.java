@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.activation.DataSource;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.Order;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -49,6 +50,33 @@ public class ReviewsApplicationTests {
 	}
 
 	@Test
+	public void testFindByproductId(){
+		Product product = new Product();
+		product.setName("Hammer");
+		entityManager.persist(product);
+		Optional<Product> actual = productRepository.findById(1);
+
+		assertThat(actual).isNotNull();
+		assertThat(actual.get().getName())
+				.isEqualTo(product.getName());
+	}
+
+	@Test
+	public void testFindAllproducts(){
+		Product hammer = new Product();
+		hammer.setName("Hammer");
+		entityManager.persist(hammer);
+		Product nail = new Product();
+		nail.setName("Nail");
+		entityManager.persist(nail);
+		List<Product> actuals = productRepository.findAll();
+
+		assertThat(actuals).isNotNull();
+		assertThat(actuals.get(0).getName().equals(hammer.getName()));
+		assertThat(actuals.get(1).getName().equals(nail.getName()));
+	}
+
+	@Test
 	public void testFindByCommentAuthor(){
 
 		Comment comment = new Comment();
@@ -74,6 +102,23 @@ public class ReviewsApplicationTests {
 
 		entityManager.persist(review);
 		Optional<Review> actual = reviewRepository.findByContent("I like the hammer.");
+
+		assertThat(actual).isNotNull();
+		assertThat(actual.get().getAuthor())
+				.isEqualTo(review.getAuthor());
+		assertThat(actual.get().getContent())
+				.isEqualTo(review.getContent());
+	}
+
+	@Test
+	public void testFindByReviewId(){
+
+		Review review = new Review();
+		review.setAuthor("John Doe");
+		review.setContent("I like the hammer.");
+
+		entityManager.persist(review);
+		Optional<Review> actual = reviewRepository.findById(1);
 
 		assertThat(actual).isNotNull();
 		assertThat(actual.get().getAuthor())

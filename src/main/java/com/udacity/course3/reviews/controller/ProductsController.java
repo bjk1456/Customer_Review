@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public class ProductsController {
      * 2. Save product.
      */
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    Product newProduct(@RequestBody Product product){
+    Product newProduct(@RequestBody @Valid Product product){
         return repository.save(product);
     }
 

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -16,8 +17,7 @@ public class Review {
     @Column(name="review_id")
     private Integer reviewId;
 
-    @NotBlank
-    @Size(max = 350)
+    @NotEmpty(message = "Please provide an author")
     @Column(name="author")
     private String author;
 

@@ -1,57 +1,55 @@
 package com.udacity.course3.reviews.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.Set;
+import lombok.Setter;
+import lombok.Getter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.persistence.Id;
+import java.util.List;
 
-@Entity
-@Table(name = "review")
+@Getter
+@Setter
+@Document("reviews")
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="review_id")
-    private Integer reviewId;
-
-    @NotEmpty(message = "Please provide an author")
-    @Column(name="author")
+    private String id;
     private String author;
-
-    @Column(name="content")
     private String content;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name="product_id_fk")
-    private Product product;
+    public List<Comment> getComments() {
+        return comments;
+    }
 
-    @OneToMany(mappedBy="review",fetch = FetchType.LAZY)
-    private Set<Comment> comments;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 
-    public Review() {}
+    private List<Comment> comments;
+    private Integer productId;
 
-    public void setId(Integer reviewId){this.reviewId = reviewId;}
+    public Integer getProductId() {
+        return productId;
+    }
 
-    public Integer getId(){return reviewId;}
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
 
-    public void setAuthor(String author){this.author = author;}
+    public Review(
+            final String author,
+            final String content,
+            final List<Comment> comments){
+        this.author = author;
+        this.content = content;
+        this.comments = comments;
+    }
 
-    public String getAuthor(){return author;}
+    public String getAuthor() {
+        return author;
+    }
 
-    public void setContent(String content){this.content = content;}
-
-    public String getContent(){return content;}
-
-    public void setProduct(Product product){this.product = product;}
-
-    public Product getProduct() {return product;}
-
-    public void setComment(Set<Comment> comments){this.comments = comments;}
-
-    public Set<Comment> getComments() {return comments;}
-
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 }

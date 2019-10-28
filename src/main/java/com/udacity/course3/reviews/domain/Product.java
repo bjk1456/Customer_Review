@@ -19,9 +19,6 @@ public class Product {
     @Column(name="name")
     private String name;
 
-    @OneToMany(mappedBy="product",fetch = FetchType.LAZY)
-    private Set<Review> reviews;
-
     public Product(){}
 
     public void setId(Integer productId){this.productId = productId;}
@@ -31,9 +28,5 @@ public class Product {
     public void setName(String name){this.name = name;}
 
     public String getName(){return name;}
-
-    public void setReviews(Set<Review> reviews){this.reviews = reviews;}
-
-    public Set<Review> getReviews(){return reviews;}
 
 }

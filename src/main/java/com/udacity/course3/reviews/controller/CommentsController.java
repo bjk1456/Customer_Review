@@ -1,10 +1,8 @@
 package com.udacity.course3.reviews.controller;
 
 import com.udacity.course3.reviews.domain.Comment;
-import com.udacity.course3.reviews.domain.Product;
 import com.udacity.course3.reviews.domain.Review;
 import com.udacity.course3.reviews.repository.CommentRepository;
-import com.udacity.course3.reviews.repository.ProductRepository;
 import com.udacity.course3.reviews.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +24,8 @@ public class CommentsController {
 
     @Autowired
     private ReviewRepository revRepository;
-    @Autowired
-    private CommentRepository comRepository;
+
+
 
     /**
      * Creates a comment for a review.
@@ -39,15 +38,25 @@ public class CommentsController {
      * @param reviewId The id of the review.
      */
     @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.POST)
-    public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") Integer reviewId,@Valid @RequestBody Comment comment) {
-        Optional<Review> review = revRepository.findByReviewId(reviewId);
+    public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") String reviewId,@Valid @RequestBody Comment comment) {
+        Optional<Review> review = revRepository.findById(reviewId);
         if (review.isPresent()) {
-            comment.setReview(review.get());
-            return new ResponseEntity(comRepository.save(comment), HttpStatus.OK);
+            System.out.println("Inside of post /reviews/{reviewId} review == " + review.get().toString());
+            List<Comment> comments;
+            if(review.get().getComments() != null){
+                comments = review.get().getComments();
+            } else{
+                comments = new ArrayList();
+            }
+            comments.add(comment);
+            review.get().setComments(comments);
+            return new ResponseEntity(revRepository.save(review.get()), HttpStatus.OK);
         } else {
             throw new HttpServerErrorException(HttpStatus.NOT_FOUND);
         }
     }
+
+
 
     /**
      * List comments for a review.
@@ -59,8 +68,9 @@ public class CommentsController {
      * @param reviewId The id of the review.
      */
     @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.GET)
-    public ResponseEntity<?> listCommentsForReview(@PathVariable("reviewId") Integer reviewId) {
-        Optional<Review> review = revRepository.findByReviewId(reviewId);
+    public ResponseEntity<?> listCommentsForReview(@PathVariable("reviewId") String reviewId) {
+        Optional<Review> review = revRepository.findById(reviewId);
         return new ResponseEntity(review.get().getComments(), HttpStatus.OK);
     }
+
 }

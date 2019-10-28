@@ -1,16 +1,18 @@
 package com.udacity.course3.reviews.repository;
 
 import com.udacity.course3.reviews.domain.Review;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ReviewRepository extends CrudRepository<Review, Integer> {
+public interface ReviewRepository extends MongoRepository<Review, String> {
 
-    Optional<Review> findByReviewId(Integer productId);
-    Optional<Review> findByContent(String content);
+    Optional<Review> findByAuthor(String author);
+    Optional<Review> findById(String id);
 
+    //@Query("{'address.country': ?0}")
+    List<Review> findByProductId(Integer prodId);
 }

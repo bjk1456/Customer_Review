@@ -41,7 +41,6 @@ public class CommentsController {
     public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") String reviewId,@Valid @RequestBody Comment comment) {
         Optional<Review> review = revRepository.findById(reviewId);
         if (review.isPresent()) {
-            System.out.println("Inside of post /reviews/{reviewId} review == " + review.get().toString());
             List<Comment> comments;
             if(review.get().getComments() != null){
                 comments = review.get().getComments();

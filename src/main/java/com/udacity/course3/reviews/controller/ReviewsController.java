@@ -37,16 +37,6 @@ public class ReviewsController {
     public ResponseEntity createReviewForProduct(@PathVariable("productId") Integer productId,@RequestBody @Valid Review review) {
         review.setProductId(productId);
         return new ResponseEntity(revRepository.save(review), HttpStatus.OK);
-        /**
-        Optional<Product> product = prodRepository.findByProductId(productId);
-        if (product.isPresent()) {
-            review.setProduct(product.get());
-            product.ifPresent(value -> System.out.println("The ifPresent is " + value.getName()));
-            return new ResponseEntity(revRepository.save(review), HttpStatus.OK);
-        } else {
-            throw new HttpServerErrorException(HttpStatus.NOT_FOUND);
-        }
-         */
     }
 
     /**

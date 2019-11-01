@@ -35,7 +35,7 @@ public class MongoDBReviewTest {
         Comment comment = new Comment("Billy","I disagree with your review");
         comL.add(comment);
 
-        Review rev = new Review("John Doe","I hated it.", comL);
+        Review rev = new Review("John Doe","I hated it.");
 
         // when
         revR.save(rev);

@@ -19,10 +19,21 @@ public class Comment {
     private String author;
     private String content;
 
+    public String getReviewId() {
+        return reviewId;
+    }
+
+    public void setReviewId(String reviewId) {
+        this.reviewId = reviewId;
+    }
+
+    private String reviewId;
+
     public Comment(
             final String author,
             final String content) {
         this.author = author;
         this.content = content;
+        this.reviewId = reviewId;
     }
 }

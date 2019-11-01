@@ -12,20 +12,19 @@ import java.util.List;
 @Setter
 @Document("reviews")
 public class Review {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Id
     private String id;
     private String author;
     private String content;
 
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    private List<Comment> comments;
     private Integer productId;
 
     public Integer getProductId() {
@@ -38,11 +37,9 @@ public class Review {
 
     public Review(
             final String author,
-            final String content,
-            final List<Comment> comments){
+            final String content){
         this.author = author;
         this.content = content;
-        this.comments = comments;
     }
 
     public String getAuthor() {

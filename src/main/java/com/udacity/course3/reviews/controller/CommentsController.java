@@ -23,7 +23,10 @@ import java.util.Optional;
 public class CommentsController {
 
     @Autowired
-    private ReviewRepository revRepository;
+    private ReviewRepository revRepo;
+
+    @Autowired
+    private CommentRepository comRepo;
 
 
 
@@ -39,17 +42,17 @@ public class CommentsController {
      */
     @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.POST)
     public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") String reviewId,@Valid @RequestBody Comment comment) {
-        Optional<Review> review = revRepository.findById(reviewId);
+        Optional<Review> review = revRepo.findById(reviewId);
         if (review.isPresent()) {
+            /**
             List<Comment> comments;
             if(review.get().getComments() != null){
                 comments = review.get().getComments();
             } else{
                 comments = new ArrayList();
-            }
-            comments.add(comment);
-            review.get().setComments(comments);
-            return new ResponseEntity(revRepository.save(review.get()), HttpStatus.OK);
+            */
+            comment.setReviewId(review.get().getId());
+            return new ResponseEntity(comRepo.save(comment), HttpStatus.OK);
         } else {
             throw new HttpServerErrorException(HttpStatus.NOT_FOUND);
         }
@@ -68,8 +71,8 @@ public class CommentsController {
      */
     @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.GET)
     public ResponseEntity<?> listCommentsForReview(@PathVariable("reviewId") String reviewId) {
-        Optional<Review> review = revRepository.findById(reviewId);
-        return new ResponseEntity(review.get().getComments(), HttpStatus.OK);
+        List<Comment> comment = comRepo.findByReviewId(reviewId);
+        return new ResponseEntity(comment, HttpStatus.OK);
     }
 
 }

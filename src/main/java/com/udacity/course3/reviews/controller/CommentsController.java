@@ -28,8 +28,6 @@ public class CommentsController {
     @Autowired
     private CommentRepository comRepo;
 
-
-
     /**
      * Creates a comment for a review.
      *
@@ -44,20 +42,12 @@ public class CommentsController {
     public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") String reviewId,@Valid @RequestBody Comment comment) {
         Optional<Review> review = revRepo.findById(reviewId);
         if (review.isPresent()) {
-            /**
-            List<Comment> comments;
-            if(review.get().getComments() != null){
-                comments = review.get().getComments();
-            } else{
-                comments = new ArrayList();
-            */
             comment.setReviewId(review.get().getId());
             return new ResponseEntity(comRepo.save(comment), HttpStatus.OK);
         } else {
             throw new HttpServerErrorException(HttpStatus.NOT_FOUND);
         }
     }
-
 
 
     /**
@@ -74,5 +64,4 @@ public class CommentsController {
         List<Comment> comment = comRepo.findByReviewId(reviewId);
         return new ResponseEntity(comment, HttpStatus.OK);
     }
-
 }

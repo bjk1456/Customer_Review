@@ -19,9 +19,7 @@ public class ReviewsController {
     // TODO: Wire JPA repositories here
     @Autowired
     private ReviewRepository revRepository;
-
-
-
+    
     /**
      * Creates a review for a product.
      * <p>

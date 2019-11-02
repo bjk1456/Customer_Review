@@ -19,6 +19,10 @@ public class Comment {
     private String author;
     private String content;
 
+    public Comment() {
+
+    }
+
     public String getReviewId() {
         return reviewId;
     }

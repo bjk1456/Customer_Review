@@ -1,7 +1,9 @@
 package com.udacity.course3.reviews.controller;
 
-import com.udacity.course3.reviews.domain.Product;
-import com.udacity.course3.reviews.domain.Review;
+import com.udacity.course3.reviews.document.ReviewDoc;
+import com.udacity.course3.reviews.model.Product;
+import com.udacity.course3.reviews.model.Review;
+import com.udacity.course3.reviews.repository.MongoReviewsRepository;
 import com.udacity.course3.reviews.repository.ProductRepository;
 import com.udacity.course3.reviews.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +28,9 @@ public class ReviewsController {
     private ReviewRepository revRepository;
     @Autowired
     private ProductRepository prodRepository;
+
+    @Autowired
+    private MongoReviewsRepository mongoRev;
 
 
     /**
@@ -42,9 +48,13 @@ public class ReviewsController {
     public ResponseEntity<?> createReviewForProduct(@PathVariable("productId") Integer productId,@RequestBody @Valid Review review) {
         Optional<Product> product = prodRepository.findByProductId(productId);
         if (product.isPresent()) {
+            ArrayList ret = new ArrayList();
             review.setProduct(product.get());
             product.ifPresent(value -> System.out.println("The ifPresent is " + value.getName()));
-            return new ResponseEntity(revRepository.save(review), HttpStatus.OK);
+            ret.add(revRepository.save(review));
+            ReviewDoc reviewDoc= new ReviewDoc(review.getAuthor(),review.getContent(),review.getComments());
+            ret.add(mongoRev.save(reviewDoc));
+            return new ResponseEntity(ret,HttpStatus.OK);
         } else {
             throw new HttpServerErrorException(HttpStatus.NOT_FOUND);
         }

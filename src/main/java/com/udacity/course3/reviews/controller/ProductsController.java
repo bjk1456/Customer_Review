@@ -1,6 +1,6 @@
 package com.udacity.course3.reviews.controller;
 
-import com.udacity.course3.reviews.domain.Product;
+import com.udacity.course3.reviews.model.Product;
 import com.udacity.course3.reviews.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,7 +47,6 @@ public class ProductsController {
             return new ResponseEntity<Product>(theP.get(), HttpStatus.OK);
         }
         else throw new HttpServerErrorException(HttpStatus.NOT_FOUND);
-
     }
 
     /**
@@ -58,6 +57,5 @@ public class ProductsController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<Product> listProducts() {
         return repository.findAll();
-
     }
 }

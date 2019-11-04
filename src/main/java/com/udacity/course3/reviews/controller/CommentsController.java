@@ -1,10 +1,10 @@
 package com.udacity.course3.reviews.controller;
 
-import com.udacity.course3.reviews.domain.Comment;
-import com.udacity.course3.reviews.domain.Product;
-import com.udacity.course3.reviews.domain.Review;
+import com.udacity.course3.reviews.document.ReviewDoc;
+import com.udacity.course3.reviews.model.Comment;
+import com.udacity.course3.reviews.model.Review;
 import com.udacity.course3.reviews.repository.CommentRepository;
-import com.udacity.course3.reviews.repository.ProductRepository;
+import com.udacity.course3.reviews.repository.MongoReviewsRepository;
 import com.udacity.course3.reviews.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.validation.Valid;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Spring REST controller for working with comment entity.
@@ -28,6 +30,9 @@ public class CommentsController {
     @Autowired
     private CommentRepository comRepository;
 
+    @Autowired
+    private MongoReviewsRepository mongoRev;
+
     /**
      * Creates a comment for a review.
      *
@@ -39,11 +44,31 @@ public class CommentsController {
      * @param reviewId The id of the review.
      */
     @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.POST)
-    public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") Integer reviewId,@Valid @RequestBody Comment comment) {
-        Optional<Review> review = revRepository.findByReviewId(reviewId);
-        if (review.isPresent()) {
-            comment.setReview(review.get());
+    public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") String reviewId,@Valid @RequestBody Comment comment) {
+        int reviewIdInt;
+        try {
+            reviewIdInt = Integer.parseInt(reviewId);
+        }
+        catch (NumberFormatException e)
+        {
+            reviewIdInt = 0;
+        }
+        Optional<Review> reviewModel = revRepository.findByReviewId(reviewIdInt);
+        Optional<ReviewDoc> reviewDoc = mongoRev.findById(reviewId);
+
+        if (reviewModel.isPresent()) {
+            comment.setReview(reviewModel.get());
             return new ResponseEntity(comRepository.save(comment), HttpStatus.OK);
+        } else if(reviewDoc.isPresent()){
+            Set<Comment> comments;
+            if(reviewDoc.get().getComments() != null){
+                comments = reviewDoc.get().getComments();
+            } else{
+                comments = new HashSet();
+            }
+            comments.add(comment);
+            reviewDoc.get().setComments(comments);
+            return new ResponseEntity(mongoRev.save(reviewDoc.get()), HttpStatus.OK);
         } else {
             throw new HttpServerErrorException(HttpStatus.NOT_FOUND);
         }
@@ -59,8 +84,12 @@ public class CommentsController {
      * @param reviewId The id of the review.
      */
     @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.GET)
-    public ResponseEntity<?> listCommentsForReview(@PathVariable("reviewId") Integer reviewId) {
-        Optional<Review> review = revRepository.findByReviewId(reviewId);
-        return new ResponseEntity(review.get().getComments(), HttpStatus.OK);
+    public ResponseEntity<?> listCommentsForReview(@PathVariable("reviewId") String reviewId) {
+        Optional<ReviewDoc> reviewModel = mongoRev.findById(reviewId);
+        if(reviewModel.isPresent()){
+            return new ResponseEntity(reviewModel.get().getComments(), HttpStatus.OK);
+        } else {
+            throw new HttpServerErrorException(HttpStatus.NOT_FOUND);
+        }
     }
 }

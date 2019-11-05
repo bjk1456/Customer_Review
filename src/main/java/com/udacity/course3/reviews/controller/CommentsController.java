@@ -85,10 +85,23 @@ public class CommentsController {
      */
     @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.GET)
     public ResponseEntity<?> listCommentsForReview(@PathVariable("reviewId") String reviewId) {
-        Optional<ReviewDoc> reviewModel = mongoRev.findById(reviewId);
+        int reviewIdInt;
+        try {
+            reviewIdInt = Integer.parseInt(reviewId);
+        }
+        catch (NumberFormatException e)
+        {
+            reviewIdInt = 0;
+        }
+        Optional<ReviewDoc> reviewDoc = mongoRev.findById(reviewId);
+        Optional<Review> reviewModel = revRepository.findByReviewId(reviewIdInt);
+
         if(reviewModel.isPresent()){
             return new ResponseEntity(reviewModel.get().getComments(), HttpStatus.OK);
-        } else {
+        } else if(reviewDoc.isPresent()){
+            return new ResponseEntity(reviewDoc.get().getComments(), HttpStatus.OK);
+        } else
+            {
             throw new HttpServerErrorException(HttpStatus.NOT_FOUND);
         }
     }

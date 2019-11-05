@@ -6,6 +6,7 @@ import com.udacity.course3.reviews.model.Comment;
 import com.udacity.course3.reviews.model.Product;
 import com.udacity.course3.reviews.model.Review;
 import com.udacity.course3.reviews.repository.CommentRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,9 +30,16 @@ import java.util.Set;
 @DataMongoTest
 @ExtendWith(SpringExtension.class)
 public class MongoDbSpringIntegrationTest {
+
+    @BeforeEach
+    public void reset(){
+        mongoTemplate.dropCollection("review");
+    }
+
+    @Autowired MongoTemplate mongoTemplate;
     @DisplayName("Save a comment using MongoDB template then find it via its Author")
     @Test
-    public void testFindByCommentAuthor(@Autowired MongoTemplate mongoTemplate) {
+    public void testFindByCommentAuthor() {
         // given
         Comment com = new Comment();
         com.setId((long) 123);
@@ -41,12 +49,11 @@ public class MongoDbSpringIntegrationTest {
         mongoTemplate.save(com, "review");
 
         assertEquals("John Doe", mongoTemplate.findAll(Comment.class, "review").get(0).getAuthor());
-
     }
 
     @DisplayName("Save a comment using MongoDB template then find it via its ReviewId")
     @Test
-    public void testFindByCommentReviewId(@Autowired MongoTemplate mongoTemplate) {
+    public void testFindByCommentReviewId() {
         // given
         Comment com = new Comment();
         long comId = 456L;
@@ -63,12 +70,11 @@ public class MongoDbSpringIntegrationTest {
         Review foundR = mongoTemplate.findAll(Review.class, "review").get(0);
         Comment foundC = (Comment) foundR.getComments().toArray()[0];
         assertEquals("John Doe", foundC.getAuthor());
-
     }
 
     @DisplayName("Save a review using MongoDB template then find it via its Id")
     @Test
-    public void testFindByReviewId(@Autowired MongoTemplate mongoTemplate) {
+    public void testFindByReviewId() {
         // given
         Review rev = new Review();
         rev.setId(123);
@@ -78,12 +84,11 @@ public class MongoDbSpringIntegrationTest {
         mongoTemplate.save(rev, "review");
 
         assertEquals("123", mongoTemplate.findAll(Review.class, "review").get(0).getId().toString());
-
     }
 
     @DisplayName("Save a review using MongoDB template then find it via its author")
     @Test
-    public void testFindByReviewAuthor(@Autowired MongoTemplate mongoTemplate) {
+    public void testFindByReviewAuthor() {
         // given
         Review rev = new Review();
         rev.setId(123);
@@ -93,12 +98,11 @@ public class MongoDbSpringIntegrationTest {
         mongoTemplate.save(rev, "review");
 
         assertEquals("John Doe", mongoTemplate.findAll(Review.class, "review").get(0).getAuthor());
-
     }
 
     @DisplayName("Save a review using MongoDB template then find it via its productId")
     @Test
-    public void testFindByReviewProductId(@Autowired MongoTemplate mongoTemplate) {
+    public void testFindByReviewProductId() {
         // given
         Review rev = new Review();
         rev.setId(123);
@@ -111,6 +115,5 @@ public class MongoDbSpringIntegrationTest {
         mongoTemplate.save(rev, "review");
 
         assertEquals("456", mongoTemplate.findAll(Review.class, "review").get(0).getProduct().getId().toString());
-
     }
 }

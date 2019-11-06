@@ -49,7 +49,7 @@ public class ReviewsApplicationTests {
 	public void testFindByproductId(){
 		Product product = new Product();
 		product.setName("Hammer");
-		entityManager.persist(product);
+		productRepository.save(product);
 		Optional<Product> actual = productRepository.findById(1);
 
 		assertThat(actual).isNotNull();
